@@ -1,0 +1,27 @@
+questions = [
+        "Which of the following signals are sent to the processs when a user presses Control + C in the shell?",
+        "Which of the following is abstracted by operating system?",
+        "What are the standard file descriptor numbers for STDERR, STDIN, and STDOUT?",
+        "Which of the following header files must necessarily be included to use dynamic memory allocation functions?",
+        "What is the maximum possible length of an identifier?",
+        "Who developed the Python language?",
+        "Which one of the following is the correct extension of the Python file??",
+        "Which of the following is not a Java features?",
+        "What is the return type of the hashCode() method in the Object class?",
+        "How many layers Deep learning algorithms are constructed?", ]
+
+    answer_choice = [
+                  [ "SIGINT","SIGTERM","SIGKILL","SIGQUIT"],
+	["Hardware","Users","Applications","All of the above​"]
+                  ["0,1,2","2,0,1", "1,2,3","Randomly decide"],
+	["stdio.h" ,"stdlib.h","memory.h","dos.h"],
+	["4", "5", "2", "3"],
+	["Zim Den", "Guido van Rossum", "Niene Stom", "Wick van Rossum"],
+	[".py", ".p", ".txt", ".c"],
+	["Dynamic", "Architecture Neutral", "Use of pointers", "Object-oriented"],
+	["Object", "int", "long", "void"],
+	["4", "2", "1", "3"],]
+
+    answers = [0, 0, 1, 1, 3, 1, 0, 2, 1, 3]
+    user_answer = []
+    indexes = []

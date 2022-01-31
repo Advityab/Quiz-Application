@@ -1,0 +1,312 @@
+import tkinter
+from tkinter import *
+from PIL import Image, ImageTk
+from tkinter import messagebox,ttk
+import random
+import smtplib
+from plyer import notification
+
+class Test():
+    global indexes ,questions,answer_choice,answers,user_answer,ques,radiovar, lblQuestion, r1, r2, r3, r4, ques, txt_label7,txt_label,score
+    def __init__(self,root):
+        self.root=root
+        self.root.title("Take Test")
+        self.root.geometry("1280x675+252+202")
+        self.root.resizable(False, False)
+        self.root.config(background="White")
+
+        # ================================= background image==============================
+        bg = Image.open("bgdesk.png")
+        bg = bg.resize((1280, 650), Image.ANTIALIAS)
+        self.photoimg1 = ImageTk.PhotoImage(bg)
+
+        f_Lable = Label(self.root, image=self.photoimg1)
+        f_Lable.place(x=0, y=0, width=1280, height=650)
+
+        self.scrollBar = ttk.Scrollbar(self.root)
+        self.scrollBar.pack(side=RIGHT, fill=Y)
+
+        # ==================Left image===============================
+        # logo = Image.open(r"terna.png")
+        # logo = logo.resize((180, 120), Image.ANTIALIAS)
+        # self.photoimg = ImageTk.PhotoImage(logo)
+        #
+        # self.f_Lable1 = Label(root, image=self.photoimg)
+        # self.f_Lable1.place(x=200, y=20, width=150, height=120)
+
+        # ==================Right image===============================
+        logo = Image.open(r"bottom.png")
+        logo = logo.resize((150, 120), Image.ANTIALIAS)
+        self.photoimg = ImageTk.PhotoImage(logo)
+
+        self.f_Lable = Label(root, image=self.photoimg)
+        self.f_Lable.place(x=1100, y=20, width=150, height=120)
+
+        # =======================Instuction about Quiz================================
+
+        self.txt_label5 = Label(self.root, text="Read these instruction carefully ", font=("times new roman", 20, "bold"), bg="white",fg="blue")
+        self.txt_label5.place(x=430, y=150, width=420, height=40)
+
+        self.txt_label1 = Label(self.root, text="1) There are a total 10 questions.", font=("times new roman", 20, "bold"),
+                           bg="white")
+        self.txt_label1.place(x=430, y=200, width=400, height=40)
+
+        self.txt_label2 = Label(self.root, text="2) Each question carries one mark.", font=("times new roman", 20, "bold"),
+                           bg="white")
+        self.txt_label2.place(x=430, y=250, width=420, height=40)
+
+        self.txt_label3 = Label(self.root, text="3) No negative marking for wrong answers.", font=("times new roman", 20, "bold"),
+                           bg="white")
+        self.txt_label3.place(x=430, y=300, width=510, height=40)
+
+        self.txt_label4 = Label(self.root, text="4) Questions are of Multiple Choice type.", font=("times new roman", 20, "bold"),
+                           bg="white")
+        self.txt_label4.place(x=430, y=350, width=480, height=40)
+
+        self.txt_label6 = Label(self.root, text="Click Take Test once you are ready.", font=("times new roman", 20, "bold"), bg="white",fg="Red")
+        self.txt_label6.place(x=430, y=400, width=450, height=40)
+
+        # ======================Button for Take Test============================
+
+        self.test_btn = Button(self.root, text="Take Test", font=("times new roman", 20, "bold"), border=1, fg="gold", bg="black",
+                          relief=SUNKEN, command=self.startIsPressed)
+        self.test_btn.place(x=580, y=480, width=120, height=40)
+
+    def startIsPressed(self):
+        self.f_Lable.destroy()
+        self.txt_label1.destroy()
+        self.txt_label2.destroy()
+        self.txt_label3.destroy()
+        self.txt_label4.destroy()
+        self.txt_label5.destroy()
+        self.txt_label6.destroy()
+        self.test_btn.destroy()
+        self.gen()
+        self.start_Quiz()
+
+    questions = [
+        "Which of the following signals are sent to the process when a user presses Control + C in the shell?",
+        "Which of the following is abstracted by operating system?",
+        "What are the standard file descriptor numbers for STDERR, STDIN, and STDOUT?",
+        "Which part of a process is used for dynamic memory allocation?",
+        "What is the maximum possible length of an identifier?",
+        "Who developed the Python language?",
+        "Which one of the following is the correct extension of the Python file?",
+        "Which of the following is not a Java features?",
+        "What is the return type of the hashCode() method in the Object class?",
+        "How many layers Deep learning algorithms are constructed?", ]
+
+    answer_choice = [
+        ["SIGINT", "SIGTERM", "SIGKILL", "SIGQUIT"],
+        ["Processor", "Memory", "Network Cards", "All of the above"],
+        ["0,1,2", "2,0,1", "1,2,3", "Randomly decide"],
+        ["Code Segment", "Stack", "Heap", "Data Segment"],
+        ["3", "5", "2", "4"],
+        ["Zim Den", "Guido van Rossum", "Niene Stom", "Wick van Rossum"],
+        [".py", ".p", ".txt", ".c"],
+        ["Dynamic", "Architecture Neutral", "Use of pointers", "Object-oriented"],
+        ["Object", "int", "long", "void"], ]
+
+    answers = [0, 4, 1, 2, 3, 2, 1, 0, 2, 1]
+    user_answer = []
+    indexes = []
+
+    def gen(self):
+        global indexes
+        while (len(indexes) < 5):
+            x = random.randint(0, 9)
+            indexes.append(x)
+            if x in indexes:
+                continue
+            else:
+                indexes.append(x)
+
+    def mail(self):
+        global txt_label ,score
+        # Score = self.score.get()
+        try:
+            sender_mail = "quizninja6@gmail.com"
+            sender_password = "pythonproject"
+            rec_mail = self.txt_label.get()
+            message = f"Welcome to Quiz Guru \nCongratulations , You have Successfully submitted Test on Quiz Guru!! \nYour score is {self.score}\nThank You."
+            if rec_mail == " ":
+                messagebox.showerror("Error", "All Fields Required", parent=self.root)
+            else:
+               server = smtplib.SMTP('smtp.gmail.com', 587)
+               server.starttls()
+               server.login(sender_mail, sender_password)
+               print("Send Email")
+               server.sendmail(sender_mail, rec_mail, message)
+               print("Email has been send to receiver", rec_mail)
+               title = "Quiz Guru Result"
+               message = "Email has been sent successfully on your mail.\nThank You"
+               notification.notify(
+                   title=title,
+                   message=message,
+                   app_icon=None,
+                   timeout=5,
+                   toast=False
+               )
+        except Exception as ae:
+             messagebox.showerror("Error", f"Error due to ths str{ae}", parent=self.root)
+
+    def showresult(self,score):
+        global txt_label
+        lblQuestion.destroy()
+        r1.destroy()
+        r2.destroy()
+        r3.destroy()
+        r4.destroy()
+        lblimage = Label(
+            self.root,
+            bg="White",
+        )
+        lblimage.pack()
+        lblresulttext = Label(
+            self.root,
+            font=("times new roman ",20),
+            bg="White",
+        )
+        lblresulttext.pack()
+        self.txt_label = Entry(
+            self.root,
+            font=("times new roman",20),
+            bg="lightgray",
+
+        )
+        self.txt_label.place(x=100,y=200,width=200,height=40)
+        email_button = Button(self.root,text="Click",font=("times new roman",20))
+        email_button.place(x=100,y=280,width=200,height=40)
+
+        if self.score >=20:
+               PhotoImage(file="excellent.png")
+               lblimage.configure(image=img)
+               lblimage.image = img
+               email_button.configure(command=self.mail)
+               lblresulttext.configure(text=f"Your score is {score} .\nThank You.")
+
+        elif(self.score >=10 and self.score< 20):
+               img = PhotoImage(file="good.png")
+               lblimage.configure(image=img)
+               lblimage.image = img
+               email_button.configure(command=self.mail)
+               lblresulttext.configure(text=f"Your Score is {score}.\nThank You.")
+        else:
+               img = PhotoImage(file="Fail.png")
+               lblimage.configure(image=img)
+               lblimage.image = img
+               email_button.configure(command=self.mail)
+               lblresulttext.configure(text=f"Your Score is {score}.\nThank You.")
+        #except Exception as ae:
+            #messagebox.showerror("Error", f"Error due to ths str{ae}", parent=root)
+
+
+    def calc(self):
+        global indexes, user_answer, answers
+        x = 0
+        self.score = 0
+        for i in indexes:
+            if user_answer[x] == answers[i]:
+                self.score += 5
+            x += 1
+        print(self.score)
+        self.showresult(self.score)
+
+    ques = 1
+
+    def selected(self):
+        global radiovar, user_answer, lblQuestion, r1, r2, r3, r4, ques, txt_label7
+
+        x = radiovar.get()
+        user_answer.append(x)
+        radiovar.set(-1)
+        if ques < 5:
+            lblQuestion.config(text=questions[indexes[ques]])
+            r1['text'] = answer_choice[indexes[ques]][0]
+            r2['text'] = answer_choice[indexes[ques]][1]
+            r3['text'] = answer_choice[indexes[ques]][2]
+            r4['text'] = answer_choice[indexes[ques]][3]
+            ques += 1
+        else:
+            self.txt_label7.destroy()
+            self.calc()
+
+
+    def start_Quiz(self):
+        global lblQuestion, r1, r2, r3, r4, txt_label7
+
+        self.txt_label7 = Label(self.root, text="Welcome To This Quiz Guru", font=("times new roman", 20), justify="center",
+                           bg="black", fg="gold")
+        self.txt_label7.place(x=0, y=0, width=1280, height=40)
+
+        # bg = Image.open("bottom.png")
+        # bg = bg.resize((380, 450), Image.ANTIALIAS)
+        # bgimg = ImageTk.PhotoImage(bg)
+
+        # img_Label = Label(root, image=bgimg)
+        # img_Label.place(x=172, y=151, width=380, height=450)
+        lblQuestion = Label(
+            self.root,
+            #image=photoimg1,
+            text=questions[indexes[0]],
+            font=("times new roman", 15, "bold"),
+            width=500,
+            justify="center",
+            wraplength=400,
+            bg="white"
+        )
+        lblQuestion.pack(pady=(100, 30))
+
+        global radiovar
+        radiovar = IntVar()
+        radiovar.set(-1)
+
+        r1 = Radiobutton(
+            self.root,
+            text=answer_choice[indexes[0]][0],
+            font=("Times", 15),
+            value=0,
+            variable=radiovar,
+            command=self.selected,
+            bg="white",
+        )
+        r1.pack(pady=5)
+
+        r2 = Radiobutton(
+            self.root,
+            text=answer_choice[indexes[0]][1],
+            font=("Times", 15),
+            value=1,
+            variable=radiovar,
+            command=self.selected,
+            bg="white",
+        )
+        r2.pack(pady=5)
+
+        r3 = Radiobutton(
+            self.root,
+            text=answer_choice[indexes[0]][2],
+            font=("Times", 15),
+            value=2,
+            variable=radiovar,
+            command=self.selected,
+            bg="white",
+        )
+        r3.pack(pady=5)
+
+        r4 = Radiobutton(
+            self.root,
+            text=answer_choice[indexes[0]][3],
+            font=("Times", 15),
+            value=3,
+            variable=radiovar,
+            command=self.selected,
+            bg="white",
+        )
+        r4.pack(pady=5)
+
+
+if __name__== "__main__":
+    root=Tk()
+    obj=Test(root)
+    root.mainloop()
